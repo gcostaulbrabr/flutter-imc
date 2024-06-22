@@ -77,39 +77,38 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
+  Widget imcForm() {
+    return Form(
+      child: Expanded(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             const Text(
-              'Calculadora de IMC',
+              'Informe masculino/feminino, peso e altura',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
+                  const Spacer(),
                   iconeSelecionavel(0, text: "Masculino", icon: Icons.male),
+                  const Spacer(),
                   iconeSelecionavel(1, text: "Feminino", icon: Icons.female),
-                ],
-              ),
+                  const Spacer(),
+                ]
+              )
             ),
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
+                  const Spacer(),
                   Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Seu peso (KG)',
+                          'Peso (KG)',
                           style: TextStyle(color: _pesoInvalido ? Colors.red : null),
                         ),
                         Expanded(
@@ -125,18 +124,19 @@ class _MyHomePageState extends State<MyHomePage> {
                                   calcularImc();
                                 }
                               }
-                            ),
+                            )
                           )
                         )
-                      ],
-                      )
+                      ]
+                    )
                   ),
+                  const Spacer(),
                   Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Sua altura (m)',
+                          'Altura (m)',
                           style: TextStyle(color: _alturaInvalida ? Colors.red : null),
                         ),
                         Expanded(
@@ -152,28 +152,51 @@ class _MyHomePageState extends State<MyHomePage> {
                                   calcularImc();
                                 }
                               }
-                            ),
+                            )
                           )
                         )
-                      ],
-                    ),
-                  )
-                ],
-              )
-            ),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('Seu IMC'),
-                  Text(_pesoInvalido || _alturaInvalida ? "INVÁLIDO" : _imc.toStringAsFixed(2), style: const TextStyle(fontWeight: FontWeight.bold)),
-                  Text(_pesoInvalido || _alturaInvalida ? "Preencha peso e altura corretamente nos campos acima" : _imcCategoria)
-                ],
+                      ]
+                    )
+                  ),
+                  const Spacer()
+                ]
               )
             )
-          ],
-        ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+          ]
+        )
+      )
+    );
+  }
+
+  Widget imcResult() {
+    return Expanded(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text('Seu IMC'),
+          Text(_pesoInvalido || _alturaInvalida ? "INVÁLIDO" : _imc.toStringAsFixed(2), style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(_pesoInvalido || _alturaInvalida ? "Preencha peso e altura corretamente nos campos acima" : _imcCategoria)
+        ]
+      )
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            imcForm(),
+            imcResult()
+          ]
+        )
+      )
     );
   }
 
