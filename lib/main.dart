@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ImcApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ImcApp extends StatelessWidget {
+  const ImcApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,30 +15,21 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(107, 107, 106, 1)),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Calculadora de IMC'),
+      home: const ImcHomePage(title: 'Calculadora de IMC'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+class ImcHomePage extends StatefulWidget {
+  const ImcHomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<ImcHomePage> createState() => _ImcHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _ImcHomePageState extends State<ImcHomePage> {
   int? _iconeSelecionado;
   double _peso = 0;
   double _altura = 0;
@@ -48,6 +38,19 @@ class _MyHomePageState extends State<MyHomePage> {
   double _imc = 0;
   String _imcCategoria = '';
 
+  // Calcula o IMC, de acordo com as regras estabelecidas no modelo do exercício
+  void calcularImc() {
+    _imc = _peso / (_altura * _altura);
+    _imcCategoria = switch (_imc) {
+      < 18.5 => 'Abaixo do peso',
+      >= 18.5 && < 24.9 => 'Peso normal',
+      >= 24.9 && < 29.9 => 'Sobrepeso',
+      >= 29.9 => 'Obesidade',
+      _ => 'ERRO'
+    };
+  }
+
+  // Usado nos ícones de masculino/feminino do form
   Widget iconeSelecionavel(int index, {required String text, required IconData icon}) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -77,6 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // Form do IMC, com seleção de masculino/feminino e preenchimento de peso e altura
+  // O cálculo do IMC ocorre automaticamente, de acordo com o preenchimento do form
   Widget imcForm() {
     return Form(
       child: Expanded(
@@ -168,6 +173,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // Exibe o resultado do cálculo do IMC, com o índice e a sua categoria
   Widget imcResult() {
     return Expanded(
       child: Column(
@@ -198,16 +204,5 @@ class _MyHomePageState extends State<MyHomePage> {
         )
       )
     );
-  }
-
-  void calcularImc() {
-    _imc = _peso / (_altura * _altura);
-    _imcCategoria = switch (_imc) {
-      < 18.5 => 'Abaixo do peso',
-      >= 18.5 && < 24.9 => 'Peso normal',
-      >= 24.9 && < 29.9 => 'Sobrepeso',
-      >= 29.9 => 'Obesidade',
-      _ => 'ERRO'
-    };
   }
 }
