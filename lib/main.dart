@@ -12,13 +12,14 @@ class ImcApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const String appTitle = 'Calculadora de IMC';
     return MaterialApp(
-      title: 'Calculadora de IMC',
+      title: appTitle,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(107, 107, 106, 1)),
         useMaterial3: true,
       ),
-      home: const ImcHomePage(title: 'Calculadora de IMC'),
+      home: const ImcHomePage(title: appTitle),
     );
   }
 }
@@ -113,7 +114,7 @@ class _ImcHomePageState extends State<ImcHomePage> {
         child: Column(
           children: [
             const Text(
-              'Informe masculino/feminino, peso e altura',
+              'Informe masc./fem., peso e altura',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Expanded(
@@ -175,8 +176,8 @@ class _ImcHomePageState extends State<ImcHomePage> {
                             textAlign: TextAlign.center,
                             onChanged: (value) => setState(
                               () {
-                                var altura = numberFormat.tryParse(value) as double?;
-                                _alturaInvalida = (altura is! double) || altura <= 0;
+                                var altura = stringToPositiveDouble(value);
+                                _alturaInvalida = (altura is! double);
                                 if (!_alturaInvalida) {
                                   _altura = altura!;
                                   calcularImc();
