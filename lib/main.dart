@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() {
+  // Necessário para o parsing dos valores numéricos no form
+  Intl.defaultLocale = 'pt-BR';
   runApp(const ImcApp());
 }
 
@@ -37,6 +40,11 @@ class _ImcHomePageState extends State<ImcHomePage> {
   bool _alturaInvalida = true;
   double _imc = 0;
   String _imcCategoria = '';
+  late NumberFormat numberFormat;
+
+  _ImcHomePageState() {
+    numberFormat = NumberFormat();
+  }
 
   // Calcula o IMC, de acordo com as regras estabelecidas no modelo do exercício
   void calcularImc() {
@@ -48,6 +56,23 @@ class _ImcHomePageState extends State<ImcHomePage> {
       >= 29.9 => 'Obesidade',
       _ => 'ERRO'
     };
+  }
+
+  double? stringToPositiveDouble(String value) {
+    // Não aceita string contendo ponto, porque quebra o parsing do NumberFormat em pt-BR
+    // quando usado com numérico no formato en-US (ex.: peso=81.23Kg ou altura=1.75m)
+    // Nesses casos o NumberFormat.tryParse() abaixo retorna um número absurdo, em vez de 
+    // falhar retornando nulo como esperado. TODO: investigar motivo
+    if (value.contains('.')) {
+      return null;
+    }
+      
+    var n = numberFormat.tryParse(value) as double?;
+    if (n is! double || n <= 0) {
+      return null;
+    }
+    
+    return n;
   }
 
   // Usado nos ícones de masculino/feminino do form
@@ -122,8 +147,8 @@ class _ImcHomePageState extends State<ImcHomePage> {
                             textAlign: TextAlign.center,
                             onChanged: (value) => setState(
                               () {
-                                var peso = double.tryParse(value);
-                                _pesoInvalido = (peso is! double) || peso <= 0;
+                                var peso = stringToPositiveDouble(value);
+                                _pesoInvalido = (peso is! double);
                                 if (!_pesoInvalido) {
                                   _peso = peso!;
                                   calcularImc();
@@ -150,7 +175,7 @@ class _ImcHomePageState extends State<ImcHomePage> {
                             textAlign: TextAlign.center,
                             onChanged: (value) => setState(
                               () {
-                                var altura = double.tryParse(value);
+                                var altura = numberFormat.tryParse(value) as double?;
                                 _alturaInvalida = (altura is! double) || altura <= 0;
                                 if (!_alturaInvalida) {
                                   _altura = altura!;
